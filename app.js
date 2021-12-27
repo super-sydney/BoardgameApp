@@ -7,6 +7,7 @@ const port = process.argv[2];
 const app = express();
 
 app.get("/", indexRouter);
+app.get("/play", indexRouter);
 
 app.use(express.static(__dirname + "/public"));
 http.createServer(app).listen(port);
