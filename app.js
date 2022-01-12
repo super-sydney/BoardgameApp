@@ -19,7 +19,8 @@ const wss = new websocket.Server({ server });
 const games = new Map(); //map id to game
 const players = new Map(); //map ws to id
 
-var id = 0;
+var playerId = 0;
+var gameId = 0;
 
 var completedGames = 0;
 var avgGameLength = 0;
@@ -28,11 +29,11 @@ wss.on("connection", (ws) => {
     ws.on("message", (msg) => handleMessage(msg, ws));
 
     ws.on("close", (e) => {
-        if (!players.get(ws)) return;
+        if (typeof players.get(ws) != "number") return;
         let playerId = players.get(ws);
         let game = games.get(playerId);
 
-        if (game) game.removePlayer(ws)
+        game.end(ws, playerId);
         games.delete(playerId);
         players.delete(ws);
 
@@ -40,25 +41,44 @@ wss.on("connection", (ws) => {
     });
 });
 
+/**
+ * function to interpret messgaes received by the server
+ * messages should be sent as a JSON object in the form:
+ *{
+ *   msg: "someCommand",
+ *   data: "someData"
+ *}
+ *where the message might be something like "roll" and the data belonging to that might be "5"
+ * @param {Buffer} msg message data
+ * @param {WebSocket} ws websocket from which the data was sent
+ */
 const handleMessage = (msg, ws) => {
-    switch (String(msg)) {
-        case "sup":
-            console.log(players.entries());
-            console.log(games.entries());
-            break;
-        case "join game":
+    msg = JSON.parse(String(msg));
+
+    switch (msg.msg) {
+        case "join":
             matchmaking(ws);
             break;
         case "statistics":
-            ws.send(players.size + "\n" + completedGames + "\n" + avgGameLength);
+            ws.send(JSON.stringify({ msg: "stats", data: players.size + "\n" + completedGames + "\n" + avgGameLength }));
+            break;
+        case "roll":
+            games.get(players.get(ws)).roll(parseInt(msg.data));
+            break;
+        case "choice":
+            games.get(players.get(ws)).choice(parseInt(msg.data));
             break;
         default:
-            console.log("[LOG] " + msg);
+            console.log("[LOG] " + msg.msg + (msg.data ? ", " + msg.data : ""));
     }
 }
 
+/**
+ * put a player into a game that's not yet full, otherwise make a new game
+ * @param {WebSocket} ws player that needs to be put into a game
+ */
 const matchmaking = (ws) => {
-    players.set(ws, id++) //assign an id to this ws
+    players.set(ws, playerId++) //assign an id to this ws
     console.log("[LOG] player connected with id " + players.get(ws));
 
     let foundGame = false;
@@ -68,16 +88,18 @@ const matchmaking = (ws) => {
             foundGame = true;
             game[1].addPlayer(ws);
             games.set(players.get(ws), game[1]);
-            console.log("[LOG] added player " + players.get(ws) + " to pre-existing game");
+            console.log("[LOG] added player " + players.get(ws) + " to pre-existing game with id " + game[1].getId());
+            game[1].start();
             return;
         }
     }
 
     if (!foundGame) { //if no game was found, make a new game and add it
-        let g = new game.Game();
+        let g = new game.Game(gameId++);
         g.addPlayer(ws);
         games.set(players.get(ws), g);
         console.log("[LOG] added player " + players.get(ws) + " to newly created game");
+        ws.send(JSON.stringify({ msg: "waiting" }));
     }
 }
 
