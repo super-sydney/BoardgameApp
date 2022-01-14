@@ -18,6 +18,12 @@ socket.onmessage = (msg) => {
             alert("The game has ended because a player has left");
             window.location.href = "http://localhost:3000/";
             break;
+        case Messages.T_DIE_ROLLED:
+            rollOpponent(msg.data);
+            break;
+        case Messages.T_MOVE_PIECE:
+            moveOpponent(msg.data[0], msg.data[1]);
+            break;
     }
 }
 
@@ -38,4 +44,14 @@ const movePiece = (piece) => {
     msg.data = piece;
 
     socket.send(JSON.stringify(msg));
+}
+
+const rollOpponent = (roll) => {
+    //play roll animation and show what was rolled
+    console.log("opponent rolled " + roll);
+}
+
+const moveOpponent = (player, piece) => {
+    //find the player's piece and move it by what was rolled
+    console.log("Player " + player + " wants to move piece " + piece);
 }

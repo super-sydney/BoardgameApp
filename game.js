@@ -1,4 +1,4 @@
-const { S_GAME_START } = require("./public/javascripts/messages");
+const messages = require("./public/javascripts/messages");
 
 class Player {
     constructor(ws, playerNumber) {
@@ -7,6 +7,7 @@ class Player {
         this.piecesPos = [-1, -1, -1, -1];
     }
     move(roll, piece) {
+        if (this.piecesPos[piece] == -1) this.piecesPos[piece] = 0;
         this.piecesPos[piece] += roll;
     }
     getWs() {
@@ -23,6 +24,7 @@ class Game {
         this.players = [];
         this.turn = 0;
         this.id = id;
+        this.lastRoll = 0;
     }
 
     /**
@@ -42,6 +44,15 @@ class Game {
      * @param {number} roll the number to roll for the player whose turn it is right now 
      */
     roll(roll) {
+        this.lastRoll = roll;
+
+        let msg = messages.O_DIE_ROLLED;
+        msg.data = roll;
+
+        for (let player of this.players) {
+            if (player != this.players[this.turn]) player.getWs().send(JSON.stringify(msg));
+        }
+
         console.log("[GAME] Player rolled " + roll);
     }
 
@@ -51,6 +62,17 @@ class Game {
      */
     movePiece(piece) {
         console.log("[GAME] Player moved piece " + piece);
+
+        this.players[this.turn].move(this.lastRoll, piece);
+
+        let msg = messages.O_MOVE_PIECE;
+        msg.data = [this.turn, piece];
+
+        for (let player of this.players) {
+            if (player != this.players[this.turn]) player.getWs().send(JSON.stringify(msg));
+        }
+
+        this.turn = (this.turn + 1) % this.players.length;
     }
 
     /**
@@ -58,7 +80,7 @@ class Game {
      */
     start() {
         for (let player of this.players) {
-            player.getWs().send(S_GAME_START);
+            player.getWs().send(messages.S_GAME_START);
         }
     }
 
