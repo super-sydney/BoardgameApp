@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheets/game.css" />
     <title>Ludo</title>
 </head>
 
@@ -14,6 +15,93 @@
     </section>
 
     <section id="game" style="display:none;">
+        <div id="board">
+            <div class="pieces" style="background-color: red;"></div>
+            <div class="spaces">
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+            </div>
+            <div class="pieces" style="background-color: green;"></div>
+            <div class="spaces hor">
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+            </div>
+            <div class="boardSpace center"></div>
+            <div class="spaces hor">
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+            </div>
+            <div class="pieces" style="background-color: dodgerblue;"></div>
+            <div class="spaces">
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space home"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+                <div class="space"></div>
+            </div>
+            <div class="pieces" style="background-color: yellow;"></div>
+        </div>
         <button onclick="roll()">Roll</button>
         <button onclick="movePiece(0)">Move Piece 0</button>
         <button onclick="movePiece(1)">Move Piece 1</button>

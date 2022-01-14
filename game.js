@@ -42,7 +42,7 @@ class Game {
      * @param {number} roll the number to roll for the player whose turn it is right now 
      */
     roll(roll) {
-        console.log("Player rolled " + roll);
+        console.log("[GAME] Player rolled " + roll);
     }
 
     /**
@@ -50,7 +50,7 @@ class Game {
      * @param {number} piece which piece to move; -1 is a piece from the starting area, the other pieces are defined by when they got out of the starting area
      */
     movePiece(piece) {
-        console.log("Player moved piece " + piece);
+        console.log("[GAME] Player moved piece " + piece);
     }
 
     /**

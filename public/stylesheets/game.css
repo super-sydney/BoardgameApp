@@ -1,0 +1,44 @@
+#board {
+    display: grid;
+    grid-template-rows: repeat(15, 50px);
+    grid-template-columns: repeat(15, 50px);
+    grid-gap: 2px;
+}
+
+.pieces {
+    grid-column-start: span 6;
+    grid-row-start: span 6;
+    grid-gap: 2px;
+    background-color: black;
+}
+
+.spaces {
+    display: grid;
+    grid-template-rows: repeat(6, 50px);
+    grid-template-columns: repeat(3, 50px);
+    grid-gap: 2px;
+    grid-column-start: span 3;
+    grid-row-start: span 6;
+    background-color: black;
+}
+
+.space {
+    background-color: white;
+}
+
+.home {
+    background-color: blueviolet;
+}
+
+.hor {
+    grid-template-rows: repeat(3, 50px);
+    grid-template-columns: repeat(6, 50px);
+    grid-column-start: span 6;
+    grid-row-start: span 3;
+}
+
+.center {
+    grid-column-start: span 3;
+    grid-row-start: span 3;
+    background-color: blueviolet;
+}
