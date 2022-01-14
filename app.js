@@ -1,7 +1,9 @@
 const express = require("express");
+const { Stats } = require("fs");
 const http = require("http");
 const websocket = require("ws");
 const game = require("./game.js");
+const messages = require("./public/javascripts/messages");
 
 const indexRouter = require("./routes/index.js");
 
@@ -26,52 +28,46 @@ var completedGames = 0;
 var avgGameLength = 0;
 
 wss.on("connection", (ws) => {
-    ws.on("message", (msg) => handleMessage(msg, ws));
+
+    ws.on("message", (msg) => {
+        msg = JSON.parse(String(msg));
+
+        console.log("[MSG] Received message of type " + msg.type + " from player " + players.get(ws));
+
+        switch (msg.type) {
+            case messages.T_GAME_JOIN:
+                matchmaking(ws);
+                break;
+            case messages.T_GAME_OVER:
+                gameOver(ws, msg);
+                break;
+            case messages.T_STATS:
+                stats(ws);
+                break;
+            case messages.T_DIE_ROLLED:
+                games.get(players.get(ws)).roll(msg.data);
+                break;
+            case messages.T_MOVE_PIECE:
+                games.get(players.get(ws)).movePiece(msg.data);
+                break;
+        }
+    });
 
     ws.on("close", (e) => {
         if (typeof players.get(ws) != "number") return;
         let playerId = players.get(ws);
         let game = games.get(playerId);
 
-        game.end(ws, playerId);
+        for (let player of game.getPlayers()) {
+            if (player.getWs() != ws) player.getWs().send(messages.S_GAME_ABORT);
+        }
+
         games.delete(playerId);
         players.delete(ws);
 
         console.log("[LOG] removed player " + playerId);
     });
 });
-
-/**
- * function to interpret messgaes received by the server
- * messages should be sent as a JSON object in the form:
- *{
- *   msg: "someCommand",
- *   data: "someData"
- *}
- *where the message might be something like "roll" and the data belonging to that might be "5"
- * @param {Buffer} msg message data
- * @param {WebSocket} ws websocket from which the data was sent
- */
-const handleMessage = (msg, ws) => {
-    msg = JSON.parse(String(msg));
-
-    switch (msg.msg) {
-        case "join":
-            matchmaking(ws);
-            break;
-        case "statistics":
-            ws.send(JSON.stringify({ msg: "stats", data: players.size + "\n" + completedGames + "\n" + avgGameLength }));
-            break;
-        case "roll":
-            games.get(players.get(ws)).roll(parseInt(msg.data));
-            break;
-        case "choice":
-            games.get(players.get(ws)).choice(parseInt(msg.data));
-            break;
-        default:
-            console.log("[LOG] " + msg.msg + (msg.data ? ", " + msg.data : ""));
-    }
-}
 
 /**
  * put a player into a game that's not yet full, otherwise make a new game
@@ -101,6 +97,20 @@ const matchmaking = (ws) => {
         console.log("[LOG] added player " + players.get(ws) + " to newly created game");
         ws.send(JSON.stringify({ msg: "waiting" }));
     }
+}
+
+const gameOver = (ws, msg) => {
+    for (let player of games.get(players.get(ws)).getPlayers()) {
+        if (player.getWs() != ws) {
+            player.getWs().send(msg);
+        }
+    }
+}
+
+const stats = (ws) => {
+    let msg = messages.O_STATS;
+    msg.data = [games.size, completedGames, avgGameLength];
+    ws.send(JSON.stringify(msg))
 }
 
 server.listen(port);

@@ -1,3 +1,5 @@
+const { S_GAME_START } = require("./public/javascripts/messages");
+
 class Player {
     constructor(ws, playerNumber) {
         this.ws = ws;
@@ -39,14 +41,16 @@ class Game {
      * stores what the current player rolled and sends it to the other players (just to display a die)
      * @param {number} roll the number to roll for the player whose turn it is right now 
      */
-    roll(roll) {}
+    roll(roll) {
+        console.log("Player rolled " + roll);
+    }
 
     /**
      * takes the piece the client has chosen and moves it by whatever was rolled last, then sends this choice to the other players (to actually move the piece)
      * @param {number} piece which piece to move; -1 is a piece from the starting area, the other pieces are defined by when they got out of the starting area
      */
-    choice(piece) {
-
+    movePiece(piece) {
+        console.log("Player moved piece " + piece);
     }
 
     /**
@@ -54,22 +58,12 @@ class Game {
      */
     start() {
         for (let player of this.players) {
-            player.getWs().send(JSON.stringify({ msg: "start" }));
+            player.getWs().send(S_GAME_START);
         }
     }
 
-    /**
-     * ends the game prematurely if one of the players leaves
-     * @param {WebSocket} ws the player that left
-     * @param {number} id the id of the player
-     */
-    end(ws, id) {
-        for (let player of this.players) {
-            if (player.getWs() != ws) {
-                player.getWs().send(JSON.stringify({ msg: "end", data: id }));
-                console.log("[LOG] sent end message for game " + this.id);
-            }
-        }
+    getPlayers() {
+        return this.players;
     }
 
     getId() {
