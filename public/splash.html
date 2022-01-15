@@ -5,27 +5,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheets/splash.css" />
     <title>Splash</title>
 </head>
 
 <body>
     <main>
         <section id="left">
-            <h1>LuDelft</h1>
+            <div id="logo">
+                <h1>LuDelft</h1><img src="./images/ludo_logo.png" />
+            </div>
 
             <form action="/play" method="get">
                 <button type="submit">Start Game</button>
             </form>
 
-            <div>
+            <section id="statsSection">
                 <p id="stats">Players In Games:<br>Games Completed:<br>Average Game Duration:
                 </p>
-            </div>
+            </section>
         </section>
         <section id="right">
-            <p>Rule 1:</p>
-            <p>Rule 2:</p>
-            <p>Rule 3:</p>
+            <div id="rules">
+                <div>
+                    <h1>1</h1>
+                    <p>Roll until you get a 6. Once that happens, you can move one of your pieces out from the starting area.</p>
+                </div>
+                <div>
+                    <h1>2</h1>
+                    <p>After this, you can move the pieces that are out by however much you roll. If you roll a 6 you can get another piece out, or move a piece 6 spaces.</p>
+                </div>
+                <div>
+                    <h1>3</h1>
+                    <p>If you land on a space that's taken up by another player, that player's piece will be sent back to the starting area.</p>
+                </div>
+            </div>
         </section>
     </main>
     <script src="javascripts/splash.js"></script>

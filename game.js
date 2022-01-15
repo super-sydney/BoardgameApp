@@ -1,17 +1,23 @@
 const messages = require("./public/javascripts/messages");
 
 class Player {
-    constructor(ws, playerNumber) {
+    constructor(ws, id) {
         this.ws = ws;
-        this.playerNumber = playerNumber;
+        this.id = id;
         this.piecesPos = [-1, -1, -1, -1];
     }
     move(roll, piece) {
         if (this.piecesPos[piece] == -1) this.piecesPos[piece] = 0;
-        this.piecesPos[piece] += roll;
+        else this.piecesPos[piece] += roll;
     }
     getWs() {
         return this.ws;
+    }
+    getPieces() {
+        return this.piecesPos;
+    }
+    getId() {
+        return this.id;
     }
 }
 
@@ -65,8 +71,14 @@ class Game {
 
         this.players[this.turn].move(this.lastRoll, piece);
 
+        this.printPlayers();
+
         let msg = messages.O_MOVE_PIECE;
-        msg.data = [this.turn, piece];
+        msg.data = [];
+
+        for (let player of this.players) {
+            msg.data.push(player.getPieces());
+        }
 
         for (let player of this.players) {
             if (player != this.players[this.turn]) player.getWs().send(JSON.stringify(msg));
@@ -91,14 +103,12 @@ class Game {
     getId() {
         return this.id;
     }
+
+    printPlayers() {
+        for (let player of this.players) {
+            console.log("Player " + player.getId() + ": " + player.getPieces());
+        }
+    }
 }
-
-
-
-
-
-
-
-
 
 exports.Game = Game;
