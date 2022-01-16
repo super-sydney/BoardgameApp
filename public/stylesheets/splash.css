@@ -116,6 +116,22 @@ button {
     border-radius: var(--border-radius);
 }
 
+button:hover {
+    background-color: rgb(223, 223, 223);
+}
+
+button:active {
+    background-color: grey;
+}
+
 div {
     display: inline;
+}
+
+#rule1::after {
+    content: "Roll until you get a 6. Once that happens, you can move one of your pieces out from the starting area.";
+}
+
+#rule2::before {
+    content: "After this, you can move the pieces that are out by however much you roll. If you roll a 6 you can get another piece out, or move a piece 6 spaces.";
 }

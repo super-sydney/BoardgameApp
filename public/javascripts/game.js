@@ -101,12 +101,12 @@ const movePiece = (piece) => {
 
 const rollOpponent = (roll) => {
     //play roll animation and show what was rolled
-    log("Your opponent rolled a(n)" + roll);
+    log("Your opponent rolled a(n) " + roll);
 }
 
 //maps the actual position on the board to the right "space" element in the DOM 
 const spacesMap = [
-    14, 15, 16, 17, 18, 11, 9, 7, 5, 3, 0, 1,
+    14, 15, 16, 17, 18, 11, 9, 7, 5, 3, 0, 1, 2,
     4, 6, 8, 10, 12, 26, 27, 28, 29, 30, 31, 32, 38,
     37, 36, 35, 34, 33, 40, 42, 44, 46, 48, 51, 50, 49,
     47, 45, 43, 41, 39, 25, 24, 23, 22, 21, 20, 19, 13
@@ -134,14 +134,17 @@ const updatePieces = () => {
                 yard[i]
                     .getElementsByClassName("waiting")[j]
                     .classList.add("piece");
+            } else if (pos == 57) { //home
+
             } else if (pos >= 52) { //home column
                 spaces[i]
                     .getElementsByClassName("home")[pos - 52]
-                    .classList.add("piece" + (i * 4 + j));
+                    .classList.add("piece" + ((i + 3) % 4 * 4 + j));
                 spaces[i]
                     .getElementsByClassName("home")[pos - 52]
                     .classList.add("piece");
             } else {
+                console.log(i + ", " + pos);
                 boardSpaces[spacesMap[(i * 13 + pos) % 52]].classList.add("piece" + (i * 4 + j));
                 boardSpaces[spacesMap[(i * 13 + pos) % 52]].classList.add("piece");
             }
