@@ -44,11 +44,11 @@
 }
 
 .space {
-    background-color: white;
+    background-color: skyblue;
 }
 
 .home {
-    background-color: blueviolet;
+    background-color: white;
 }
 
 .hor {
@@ -61,5 +61,5 @@
 .center {
     grid-column-start: span 3;
     grid-row-start: span 3;
-    background-color: blueviolet;
+    background-color: white;
 }
