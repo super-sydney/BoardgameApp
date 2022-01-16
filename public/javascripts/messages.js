@@ -5,6 +5,7 @@
     exports.T_GAME_START = "GAME-START"
     exports.O_GAME_START = {
         type: exports.T_GAME_START,
+        data: null,
     };
     exports.S_GAME_START = JSON.stringify(exports.O_GAME_START);
 
@@ -43,6 +44,7 @@
         type: exports.T_GAME_TURN,
         data: null,
     }
+    exports.S_GAME_TURN = JSON.stringify(exports.O_GAME_TURN);
 
     /*
      * Server to client OR client to server: current player rolled this number

@@ -1,6 +1,9 @@
 const socket = new WebSocket("ws://localhost:3000");
 var startingTime;
 var players = [];
+var lastRoll = -1;
+var player = -1;
+var done = true;
 
 socket.onopen = () => {
     console.log("succesfully connected to the server")
@@ -9,14 +12,19 @@ socket.onopen = () => {
 
 socket.onmessage = (msg) => {
     msg = JSON.parse(msg.data);
+    console.log("received mesage of type " + msg.type);
 
     switch (msg.type) {
         case Messages.T_GAME_START:
-            initializeGame();
+            initializeGame(parseInt(msg.data));
             break;
         case Messages.T_GAME_ABORT:
             alert("The game has ended because a player has left");
             window.location.href = "http://localhost:3000/";
+            break;
+        case Messages.T_GAME_TURN:
+            done = false;
+            document.getElementById("die").onclick = roll;
             break;
         case Messages.T_DIE_ROLLED:
             rollOpponent(msg.data);
@@ -28,11 +36,12 @@ socket.onmessage = (msg) => {
     }
 }
 
-const initializeGame = () => {
+const initializeGame = (p) => {
     let pieces = document.getElementsByClassName("piece");
     for (let i = 0; i < pieces.length; i++) {
         pieces[i].classList.add("piece" + i);
     }
+
     players = [
         [-1, -1, -1, -1],
         [-1, -1, -1, -1],
@@ -40,19 +49,23 @@ const initializeGame = () => {
         [-1, -1, -1, -1]
     ]
 
+    player = p;
+
     document.getElementById("waiting").innerHTML = "";
     document.getElementById("game").style.display = "";
     updatePieces();
-    console.log("starting game!");
+    console.log("starting game as player " + p);
     startingTime = Date.now();
     setInterval(updateTime, 1000);
 }
 
 const roll = () => {
+    document.getElementById("die").onclick = "";
     let r = Math.floor(Math.random() * 6) + 1
-
+    lastRoll = r;
     //do animation and show roll here
-
+    document.getElementById("die").src = "../images/die-" + r + ".png";
+    log("You rolled a(n) " + r);
 
     let msg = Messages.O_DIE_ROLLED;
     msg.data = r;
@@ -61,15 +74,29 @@ const roll = () => {
 }
 
 const movePiece = (piece) => {
+    if (done) return;
     let msg = Messages.O_MOVE_PIECE;
     msg.data = piece;
 
+    if (players[player][piece] == -1 && lastRoll != 6) {
+        log("You can't let a piece out of the starting area");
+        return;
+    }
+
+    let nextPos = players[player][piece] + lastRoll;
+
+    if (nextPos > 57) {
+        log("You can't make that move, that's past the end!");
+        return;
+    }
+
+    done = true;
     socket.send(JSON.stringify(msg));
 }
 
 const rollOpponent = (roll) => {
     //play roll animation and show what was rolled
-    console.log("opponent rolled " + roll);
+    log("Your opponent rolled a(n)" + roll);
 }
 
 //maps the actual position on the board to the right "space" element in the DOM 
@@ -120,6 +147,22 @@ const updatePieces = () => {
     for (let el of currentPieces) {
         let pieceNumber = parseInt(el.className.match(/\d+/));
         el.innerHTML = "<img src='../images/pawn-" + Math.floor(pieceNumber / 4) + ".png'/>"
+
+        switch (pieceNumber % 4) {
+            case 0:
+                el.onclick = () => { movePiece(0) }
+                break;
+            case 1:
+                el.onclick = () => { movePiece(1) }
+                break;
+            case 2:
+                el.onclick = () => { movePiece(2) }
+                break;
+            default:
+                el.onclick = () => { movePiece(3) }
+                break;
+        }
+
     }
 }
 
@@ -127,4 +170,8 @@ const updateTime = () => {
     let seconds = Math.floor(((Date.now() - startingTime) / 1000) % 60);
     let minutes = Math.floor(((Date.now() - startingTime) / 1000) / 60);
     document.getElementById("time").innerHTML = "It has been " + minutes + " minutes and " + seconds + " seconds since the start of this game";
+}
+
+const log = (str) => {
+    document.getElementById("log").innerHTML += "[" + (new Date()).toTimeString().substring(0, 8) + "]" + str + "\n";
 }

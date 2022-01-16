@@ -1,8 +1,22 @@
 #board {
     display: grid;
+    float: left;
     grid-template-rows: repeat(15, 50px);
     grid-template-columns: repeat(15, 50px);
     grid-gap: 2px;
+}
+
+#die {
+    width: 20%;
+}
+
+#log {
+    width: 25vw;
+    height: 40vh;
+}
+
+.piece:hover {
+    border: 5px solid black;
 }
 
 .yard {

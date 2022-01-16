@@ -4,17 +4,24 @@ class Player {
     constructor(ws, id) {
         this.ws = ws;
         this.id = id;
-        this.piecesPos = [-1, -1, -1, -1];
+        this.pieces = [-1, -1, -1, -1];
     }
     move(roll, piece) {
-        if (this.piecesPos[piece] == -1) this.piecesPos[piece] = 0;
-        else this.piecesPos[piece] += roll;
+        if (this.pieces[piece] == -1 && roll == 6) {
+            this.pieces[piece] = 0;
+        } else {
+            this.pieces[piece] += roll;
+        }
+        return this.pieces[piece];
+    }
+    take(pos) {
+        this.pieces[this.pieces.indexOf(pos)] = -1;
     }
     getWs() {
         return this.ws;
     }
     getPieces() {
-        return this.piecesPos;
+        return this.pieces;
     }
     getId() {
         return this.id;
@@ -60,6 +67,11 @@ class Game {
         }
 
         console.log("[GAME] Player rolled " + roll);
+
+        if (roll != 6 && this.players[this.turn].getPieces().every((pos) => { return pos == -1 })) { //can't make any moves
+            console.log("next")
+            this.nextTurn();
+        }
     }
 
     /**
@@ -69,7 +81,12 @@ class Game {
     movePiece(piece) {
         console.log("[GAME] Player moved piece " + piece);
 
-        this.players[this.turn].move(this.lastRoll, piece);
+        let nextPos = this.players[this.turn].move(this.lastRoll, piece);
+
+        for (let player of this.players) {
+            if (player == this.players[this.turn]) continue;
+            if (player.getPieces().includes(nextPos)) player.take(nextPos);
+        }
 
         let msg = messages.O_MOVE_PIECE;
         msg.data = [];
@@ -86,15 +103,25 @@ class Game {
             player.getWs().send(JSON.stringify(msg));
         }
 
+        this.nextTurn();
+    }
+
+    nextTurn() {
         this.turn = (this.turn + 1) % this.players.length;
+
+        let msg = messages.S_GAME_TURN;
+        this.players[this.turn].getWs().send(msg);
     }
 
     /**
      * let all players know the game is now starting
      */
     start() {
-        for (let player of this.players) {
-            player.getWs().send(messages.S_GAME_START);
+        this.players[0].getWs().send(messages.S_GAME_TURN);
+        let msg = messages.O_GAME_START;
+        for (let i = 0; i < this.players.length; i++) {
+            msg.data = i;
+            this.players[i].getWs().send(JSON.stringify(msg));
         }
     }
 
