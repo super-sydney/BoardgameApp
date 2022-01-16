@@ -4,6 +4,7 @@ var players = [];
 var lastRoll = -1;
 var player = -1;
 var done = true;
+var rolled = false;
 
 socket.onopen = () => {
     console.log("succesfully connected to the server")
@@ -24,7 +25,9 @@ socket.onmessage = (msg) => {
             break;
         case Messages.T_GAME_TURN:
             done = false;
+            rolled = false;
             document.getElementById("die").onclick = roll;
+            log("It's your turn!")
             break;
         case Messages.T_DIE_ROLLED:
             rollOpponent(msg.data);
@@ -60,6 +63,7 @@ const initializeGame = (p) => {
 }
 
 const roll = () => {
+    rolled = true;
     document.getElementById("die").onclick = "";
     let r = Math.floor(Math.random() * 6) + 1
     lastRoll = r;
@@ -75,6 +79,7 @@ const roll = () => {
 
 const movePiece = (piece) => {
     if (done) return;
+    if (!rolled) log("You still need to roll!");
     let msg = Messages.O_MOVE_PIECE;
     msg.data = piece;
 
