@@ -16,6 +16,14 @@
     background-color: black;
 }
 
+.piece img {
+    width: 100%;
+}
+
+.space img {
+    width: 100%;
+}
+
 .waiting {
     background-image: url("../images/waiting.png");
     background-size: contain;

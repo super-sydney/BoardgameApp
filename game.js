@@ -71,8 +71,6 @@ class Game {
 
         this.players[this.turn].move(this.lastRoll, piece);
 
-        this.printPlayers();
-
         let msg = messages.O_MOVE_PIECE;
         msg.data = [];
 
@@ -80,8 +78,12 @@ class Game {
             msg.data.push(player.getPieces());
         }
 
+        while (msg.data.length < 4) {
+            msg.data.push([-1, -1, -1, -1]);
+        }
+
         for (let player of this.players) {
-            if (player != this.players[this.turn]) player.getWs().send(JSON.stringify(msg));
+            player.getWs().send(JSON.stringify(msg));
         }
 
         this.turn = (this.turn + 1) % this.players.length;

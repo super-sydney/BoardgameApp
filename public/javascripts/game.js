@@ -1,9 +1,6 @@
 const socket = new WebSocket("ws://localhost:3000");
-
-let pieces = document.getElementsByClassName("piece");
-for (let i = 0; i < pieces.length; i++) {
-    pieces[i].classList.add("piece" + Math.floor(i / 4));
-}
+var startingTime;
+var players = [];
 
 socket.onopen = () => {
     console.log("succesfully connected to the server")
@@ -15,9 +12,7 @@ socket.onmessage = (msg) => {
 
     switch (msg.type) {
         case Messages.T_GAME_START:
-            document.getElementById("waiting").innerHTML = "";
-            document.getElementById("game").style.display = "";
-            console.log("starting game!");
+            initializeGame();
             break;
         case Messages.T_GAME_ABORT:
             alert("The game has ended because a player has left");
@@ -27,9 +22,31 @@ socket.onmessage = (msg) => {
             rollOpponent(msg.data);
             break;
         case Messages.T_MOVE_PIECE:
-            moveOpponent(msg.data);
+            console.log(msg.data);
+            players = msg.data;
+            updatePieces();
             break;
     }
+}
+
+const initializeGame = () => {
+    let pieces = document.getElementsByClassName("piece");
+    for (let i = 0; i < pieces.length; i++) {
+        pieces[i].classList.add("piece" + i);
+    }
+    players = [
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1],
+        [-1, -1, -1, -1]
+    ]
+
+    document.getElementById("waiting").innerHTML = "";
+    document.getElementById("game").style.display = "";
+    updatePieces();
+    console.log("starting game!");
+    startingTime = Date.now();
+    setInterval(updateTime, 1000);
 }
 
 const roll = () => {
@@ -58,37 +75,57 @@ const rollOpponent = (roll) => {
 
 //maps the actual position on the board to the right "space" element in the DOM 
 const spacesMap = [
+    14, 15, 16, 17, 18, 11, 9, 7, 5, 3, 0, 1,
     4, 6, 8, 10, 12, 26, 27, 28, 29, 30, 31, 32, 38,
     37, 36, 35, 34, 33, 40, 42, 44, 46, 48, 51, 50, 49,
-    47, 45, 43, 41, 39, 25, 24, 23, 22, 21, 20, 19, 13,
-    14, 15, 16, 17, 18, 11, 9, 7, 5, 3, 0, 1
+    47, 45, 43, 41, 39, 25, 24, 23, 22, 21, 20, 19, 13
 ];
 
-const moveOpponent = (pieces) => {
-    //find the player's piece and move it by what was rolled
-    let boardSpaces = document.getElementsByClassName("space");
+const yard = document.getElementsByClassName("yard");
+const spaces = document.getElementsByClassName("spaces");
+const boardSpaces = document.getElementsByClassName("space");
 
+const updatePieces = () => {
     let currentPieces = document.getElementsByClassName("piece");
     for (let i = 0; i < currentPieces.length; i++) {
-        currentPieces[i].classList.remove("piece"); //clear the board of pieces
+        currentPieces[i].className = currentPieces[i].className.replaceAll(/\s?piece\d*/g, "") //clear the board of pieces
+        currentPieces[i].innerHTML = "";
     }
 
-    for (let i = 0; i < pieces.length; i++) { //add pieces back to the board
-        for (let j = 0; j < pieces[i].length; j++) {
-            let piece = pieces[i][j];
-            if (piece == -1) { //yard
-                document.getElementsByClassName("yard")[i]
+    for (let i = 0; i < players.length; i++) { //add pieces back to the board
+        let pieces = players[i];
+        for (let j = 0; j < pieces.length; j++) {
+            let pos = players[i][j];
+            if (pos == -1) { //yard
+                yard[i]
+                    .getElementsByClassName("waiting")[j]
+                    .classList.add("piece" + (i * 4 + j));
+                yard[i]
                     .getElementsByClassName("waiting")[j]
                     .classList.add("piece");
-            } else if (piece >= 52) { //home column
-                document.getElementsByClassName("spaces")[i]
-                    .getElementsByClassName("home")[piece - 52]
+            } else if (pos >= 52) { //home column
+                spaces[i]
+                    .getElementsByClassName("home")[pos - 52]
+                    .classList.add("piece" + (i * 4 + j));
+                spaces[i]
+                    .getElementsByClassName("home")[pos - 52]
                     .classList.add("piece");
             } else {
-                console.log(i + ", " + j);
-                console.log(boardSpaces[spacesMap[(i * 13 + piece) % 52]]);
-                boardSpaces[spacesMap[(i * 13 + piece) % 52]].classList.add("piece" + i);
+                boardSpaces[spacesMap[(i * 13 + pos) % 52]].classList.add("piece" + (i * 4 + j));
+                boardSpaces[spacesMap[(i * 13 + pos) % 52]].classList.add("piece");
             }
         }
     }
+
+    currentPieces = document.getElementsByClassName("piece");
+    for (let el of currentPieces) {
+        let pieceNumber = parseInt(el.className.match(/\d+/));
+        el.innerHTML = "<img src='../images/pawn-" + Math.floor(pieceNumber / 4) + ".png'/>"
+    }
+}
+
+const updateTime = () => {
+    let seconds = Math.floor(((Date.now() - startingTime) / 1000) % 60);
+    let minutes = Math.floor(((Date.now() - startingTime) / 1000) / 60);
+    document.getElementById("time").innerHTML = "It has been " + minutes + " minutes and " + seconds + " seconds since the start of this game";
 }
