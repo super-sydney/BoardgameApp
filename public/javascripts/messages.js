@@ -61,13 +61,5 @@
         type: exports.T_MOVE_PIECE,
         data: null,
     }
-
-    exports.T_STATS = "STATS";
-    exports.O_STATS = {
-        type: exports.T_STATS,
-        data: null,
-    }
-
-
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);
 //if exports is undefined, we are on the client; else the server

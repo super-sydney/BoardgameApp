@@ -11,6 +11,10 @@
 
 <body>
     <main>
+        <section id="screenSmall">
+            <p>Your screen resolution is too small</p>
+        </section>
+
         <section id="left">
             <div id="logo">
                 <h1>LuDelft</h1><img src="./images/ludo_logo.png" />
@@ -21,7 +25,11 @@
             </form>
 
             <section id="statsSection">
-                <p id="stats">Players In Games:<br>Games Completed:<br>Average Game Duration:
+
+                <p id="stats">Players In Games:
+                    <%=currentPlayers%> <br>Games Completed:
+                        <%=completed%><br>Average Game Duration:
+                            <%=gameLength%>
                 </p>
             </section>
         </section>
@@ -42,8 +50,6 @@
             </div>
         </section>
     </main>
-    <script src="javascripts/splash.js"></script>
-    <script src="javascripts/messages.js"></script>
 </body>
 
 </html>

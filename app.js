@@ -10,7 +10,10 @@ const indexRouter = require("./routes/index.js");
 const port = process.argv[2];
 const app = express();
 
-app.get("/", indexRouter);
+app.set('view engine', 'ejs');
+app.get("/", (req, res) => {
+    res.render('splash.ejs', { completed: completedGames, gameLength: avgGameLength, currentPlayers: games.size });
+});
 app.get("/play", indexRouter);
 
 app.use(express.static(__dirname + "/public"));
@@ -40,9 +43,6 @@ wss.on("connection", (ws) => {
                 break;
             case messages.T_GAME_OVER:
                 gameOver(ws, msg);
-                break;
-            case messages.T_STATS:
-                stats(ws);
                 break;
             case messages.T_DIE_ROLLED:
                 games.get(players.get(ws)).roll(msg.data);
@@ -105,12 +105,6 @@ const gameOver = (ws, msg) => {
             player.getWs().send(msg);
         }
     }
-}
-
-const stats = (ws) => {
-    let msg = messages.O_STATS;
-    msg.data = [games.size, completedGames, avgGameLength];
-    ws.send(JSON.stringify(msg))
 }
 
 server.listen(port);
