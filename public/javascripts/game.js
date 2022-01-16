@@ -22,7 +22,6 @@ socket.onmessage = (msg) => {
             rollOpponent(msg.data);
             break;
         case Messages.T_MOVE_PIECE:
-            console.log(msg.data);
             players = msg.data;
             updatePieces();
             break;
@@ -87,9 +86,9 @@ const boardSpaces = document.getElementsByClassName("space");
 
 const updatePieces = () => {
     let currentPieces = document.getElementsByClassName("piece");
-    for (let i = 0; i < currentPieces.length; i++) {
-        currentPieces[i].className = currentPieces[i].className.replaceAll(/\s?piece\d*/g, "") //clear the board of pieces
-        currentPieces[i].innerHTML = "";
+    while (currentPieces.length > 0) {
+        currentPieces[0].innerHTML = "";
+        currentPieces[0].className = currentPieces[0].className.replaceAll(/\s?piece\d*/g, "") //clear the board of pieces
     }
 
     for (let i = 0; i < players.length; i++) { //add pieces back to the board

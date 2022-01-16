@@ -53,7 +53,7 @@
         data: null,
     }
 
-    /**
+    /*
      * Server to client or client to server: current player moved their piece (send array of piece positions)
      */
     exports.T_MOVE_PIECE = "MOVE-PIECE";
