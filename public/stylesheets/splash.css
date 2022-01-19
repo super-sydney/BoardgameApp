@@ -1,4 +1,4 @@
-        :root {
+:root {
     --font: 'Verdana', sans-serif;
     --primary-color: #38C4DA;
     --big-font-size: 600%;
@@ -26,112 +26,130 @@
     #screenSmall {
         display: none;
     }
-    {
-        : ;
-    }
-    body {
-        height: 90vh;
-        background: var(--primary-color);
-        font-family: var(--font);
-    }
-    main {
-        margin: 1%;
-        height: 100%;
-    }
-    #statsSection {
-        color: var(--secondary-color);
-        bottom: 8%;
-        position: absolute;
-        font-size: var(--small-font-size);
-    }
-    section {
-        display: inline-block;
-    }
-    #left {
-        float: left;
-        width: 50%;
-    }
-    #right {
-        width: 50%;
-        float: right;
-        height: 100%;
-    }
-    #rules div {
-        left: 3%;
-        position: relative;
-        border-radius: var(--border-radius) 0 0 var(--border-radius);
-        background-color: var(--secondary-color);
-    }
-    #right div h1 {
-        width: 5%;
-        display: inline-block;
-        padding-left: 5%;
-    }
-    #right div p {
-        width: 80%;
-        display: inline-block;
-        font-size: var(--small-font-size);
-        padding-right: 5%;
-    }
-    #rules {
-        height: 100%;
-        display: grid;
-        grid-gap: 15%;
-    }
-    #logo {
-        width: 80%;
-    }
-    #logo * {
-        display: inline-block;
-    }
-    #logo h1 {
-        font-size: var(--big-font-size);
-    }
-    img {
-        width: 100px;
-        border-radius: var(--border-radius);
-        background-color: var(--secondary-color);
-    }
-    img:hover {
-        animation-name: hop;
-        animation-duration: 1s;
-        animation-direction: alternate;
-        animation-iteration-count: infinite;
-    }
-    button {
-        top: 60%;
-        border: 2px black solid;
-        padding: 20px;
-        position: absolute;
-        font-size: 50px;
-        font-family: var(--font);
-        border-radius: var(--border-radius);
-        background-color: var(--secondary-color);
-    }
-    button:hover {
-        background: rgb(223, 223, 223);
-    }
-    button:active {
-        background-color: grey;
-    }
-    div {
-        display: inline;
-    }
-    #rule1::after {
-        content: "Roll until you get a 6. Once that happens, you can move one of your pieces out from the starting area.";
-    }
-    #rule2::before {
-        content: "After this, you can move the pieces that are out by however much you roll. If you roll a 6 you can get another piece out, or move a piece 6 spaces.";
-    }
-    @keyframes hop {
+}
+
+body {
+    height: 90vh;
+    background: var(--primary-color);
+    font-family: var(--font);
+}
+
+main {
+    margin: 1%;
+    height: 100%;
+}
+
+#statsSection {
+    color: var(--secondary-color);
+    bottom: 8%;
+    position: absolute;
+    font-size: var(--small-font-size);
+}
+
+section {
+    display: inline-block;
+}
+
+#left {
+    float: left;
+    width: 50%;
+}
+
+#right {
+    width: 50%;
+    float: right;
+    height: 100%;
+}
+
+#rules div {
+    left: 3%;
+    position: relative;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    background-color: var(--secondary-color);
+}
+
+#right div h1 {
+    width: 5%;
+    display: inline-block;
+    padding-left: 5%;
+}
+
+#right div p {
+    width: 80%;
+    display: inline-block;
+    font-size: var(--small-font-size);
+    padding-right: 5%;
+}
+
+#rules {
+    height: 100%;
+    display: grid;
+    grid-gap: 15%;
+}
+
+#logo {
+    width: 80%;
+}
+
+#logo * {
+    display: inline-block;
+}
+
+#logo h1 {
+    font-size: var(--big-font-size);
+}
+
+img {
+    width: 100px;
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-color);
+}
+
+img:hover {
+    animation-name: hop;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+button {
+    top: 60%;
+    border: 2px black solid;
+    padding: 20px;
+    position: absolute;
+    font-size: 50px;
+    font-family: var(--font);
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-color);
+}
+
+button:hover {
+    background: rgb(223, 223, 223);
+}
+
+button:active {
+    background-color: grey;
+}
+
+div {
+    display: inline;
+}
+
+#rule1::after {
+    content: "Roll until you get a 6. Once that happens, you can move one of your pieces out from the starting area.";
+}
+
+#rule2::before {
+    content: "After this, you can move the pieces that are out by however much you roll. If you roll a 6 you can get another piece out, or move a piece 6 spaces.";
+}
+
+@keyframes hop {
+    from {
         bottom: 0px;
-        from {
-            position: relative;
-        }
-        to {
-            bottom: 50px;
-            position: relative;
-        }
-        {
-            : ;
-        }
+        position: relative;
+    }
+    to {
+        bottom: 50px;
+        position: relative;
+    }
+}
